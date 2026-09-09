@@ -49,15 +49,13 @@ export default function FocusSeasonScreen() {
       <Text style={typeStyles.muted}>
         What matters now. Non-focus skills stay loggable. Completing a Season grants 0 XP.
       </Text>
-      {budget?.overloaded ? (
-        <PsxCard eyebrow="Attention Budget">
-          <Text style={typeStyles.body}>{budget.suggestion}</Text>
-        </PsxCard>
-      ) : (
-        <Text style={typeStyles.muted}>
-          High-load goals: {budget?.highLoadGoalCount ?? 0}/{budget?.limit ?? 4}
+      <PsxCard eyebrow="Attention Budget">
+        <Text style={typeStyles.body}>
+          {budget?.overloaded
+            ? budget.suggestion
+            : `${budget?.highLoadGoalCount ?? 0}/${budget?.limit ?? 4} high-load goals. Overload is flagged above ${budget?.limit ?? 4}; you can override.`}
         </Text>
-      )}
+      </PsxCard>
       <Text style={typeStyles.eyebrow}>Daily challenges</Text>
       {challenges.map((item) => (
         <Pressable

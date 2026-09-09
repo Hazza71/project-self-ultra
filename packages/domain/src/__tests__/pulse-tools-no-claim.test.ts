@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { AutoClaimForbiddenError } from "../errors.js";
 import { executePulseTool, executePulseTools } from "../pulse/execute.js";
-import { createLocalPulseRuntime } from "../pulse/runtime.js";
+import { createLocalPulseRuntime, summarisePulseTurn } from "../pulse/runtime.js";
 import { createOpenAIAdapter, resolvePulseAdapterMode } from "../pulse/openaiAdapter.js";
 import { ALLOWED_PULSE_TOOLS, FORBIDDEN_PULSE_TOOLS } from "../pulse/tools.js";
 import { achievementByTitle, branchByName, storeWithPhase2, USER_A } from "./helpers.js";
@@ -47,6 +47,15 @@ describe("Pulse tools cannot auto-claim", () => {
     expect(turn.toolCalls.some((call) => call.name === "claim_achievement")).toBe(true);
     expect(turn.results.some((item) => item.error?.code === "auto_claim_forbidden")).toBe(true);
     expect(store.listClaims(USER_A)).toEqual([]);
+    expect(summarisePulseTurn(turn)).toMatch(/cannot claim/i);
+  });
+
+  it("search tool results appear in the Pulse summary", async () => {
+    const store = storeWithPhase2();
+    const runtime = createLocalPulseRuntime(store, USER_A);
+    const turn = await runtime.turn("search piano");
+    expect(turn.toolCalls.some((call) => call.name === "search_project")).toBe(true);
+    expect(summarisePulseTurn(turn)).toMatch(/First Notes|Piano|No matches/i);
   });
 
   it("can manage collections and north stars through typed tools", async () => {

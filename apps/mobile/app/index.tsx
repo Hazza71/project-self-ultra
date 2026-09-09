@@ -5,7 +5,7 @@ import { PulseLogo } from "../src/components/PulseLogo";
 import { PsxCard } from "../src/components/PsxCard";
 import { Screen } from "../src/components/Screen";
 import { usePsx } from "../src/lib/PsxContext";
-import { formatNorthStarProgress } from "@psx/domain";
+import { formatNorthStarProgress, summarisePulseTurn } from "@psx/domain";
 import { colors, type as typeStyles } from "../src/theme/tokens";
 
 export default function PulseHome() {
@@ -103,14 +103,7 @@ export default function PulseHome() {
       <Pressable style={styles.send} onPress={() => void sendPulse()} disabled={busy}>
         <Text style={styles.sendText}>{busy ? "Working…" : "Send to Pulse"}</Text>
       </Pressable>
-      {lastPulse ? (
-        <Text style={typeStyles.muted}>
-          {lastPulse.text}
-          {lastPulse.results.length
-            ? ` · ${lastPulse.results.map((item) => item.tool).join(", ")}`
-            : ""}
-        </Text>
-      ) : null}
+      {lastPulse ? <Text style={typeStyles.muted}>{summarisePulseTurn(lastPulse)}</Text> : null}
 
       {status === "missing_catalog" ? (
         <PsxCard eyebrow="Catalog">

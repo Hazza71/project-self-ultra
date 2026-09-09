@@ -38,7 +38,7 @@ export {
 export { executePulseTool, executePulseTools } from "./pulse/execute.js";
 export { createMockAdapter } from "./pulse/mockAdapter.js";
 export { createOpenAIAdapter, createPulseAdapter, resolvePulseAdapterMode } from "./pulse/openaiAdapter.js";
-export { createPulseRuntime, createLocalPulseRuntime } from "./pulse/runtime.js";
+export { createPulseRuntime, createLocalPulseRuntime, summarisePulseTurn } from "./pulse/runtime.js";
 export { PULSE_ENV_VARS } from "./pulse/types.js";
 export type { PulseAdapter, PulseToolCall, PulseToolResult, PulseEnv, PulseTurnPlan } from "./pulse/types.js";
 export type { PulseToolName } from "./pulse/tools.js";
