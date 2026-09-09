@@ -4,8 +4,16 @@
     "strict": true,
     "resolveJsonModule": true,
     "paths": {
-      "@psx/domain": ["../../packages/domain/src/index.ts"]
+      "@psx/domain": [
+        "../../packages/domain/src/index.ts"
+      ]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "assets/**/*.json"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "assets/**/*.json",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ]
 }
