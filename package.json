@@ -1,0 +1,21 @@
+{
+  "name": "project-self-ultra",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Project Self Ultra (PSX) — personal operating system for real-world capability. AI layer: Pulse. Manual master map: Atlas.",
+  "packageManager": "pnpm@10.33.3",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "pnpm --filter @psx/domain test",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "verify:canonical": "pnpm --filter @psx/domain verify",
+    "mobile": "pnpm --filter psx-mobile start",
+    "mobile:web": "pnpm --filter psx-mobile web",
+    "lint": "pnpm -r --if-present lint"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  }
+}

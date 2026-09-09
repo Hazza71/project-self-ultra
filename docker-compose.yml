@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-psx}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-psx}
+      POSTGRES_DB: ${POSTGRES_DB:-psx}
+    ports:
+      - "${POSTGRES_PORT:-54322}:5432"
+    volumes:
+      - psx_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-psx} -d ${POSTGRES_DB:-psx}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  psx_pg:

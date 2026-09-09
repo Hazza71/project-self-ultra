@@ -1,0 +1,22 @@
+{
+  "schema": "psx.canonical_data.v1",
+  "_status": "awaiting_canonical_file",
+  "product": {
+    "name": "Project Self Ultra",
+    "short": "PSX",
+    "ai": "Pulse",
+    "map": "Atlas"
+  },
+  "counts": {
+    "trees": 7,
+    "categories": 34,
+    "branches": 150,
+    "achievements": 619
+  },
+  "invariants": [
+    "canonical_structure_must_be_imported_not_reinvented",
+    "achievements_never_auto_claim",
+    "mastery_plus_does_not_block_platinum"
+  ],
+  "trees": []
+}

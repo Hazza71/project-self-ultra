@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "cursor/**"]
+  pull_request:
+
+jobs:
+  domain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @psx/domain typecheck
+      - run: pnpm test
+      - name: Verify canonical counts
+        run: |
+          if [ -f data/canonical_data.json ]; then
+            pnpm verify:canonical
+          else
+            echo "data/canonical_data.json not present yet — import count tests are skipped until the canonical file is installed."
+          fi
