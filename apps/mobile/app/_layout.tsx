@@ -13,7 +13,7 @@ export default function RootLayout() {
           screenOptions={{
             headerStyle: { backgroundColor: colors.background },
             headerTintColor: colors.gold,
-            headerTitleStyle: { color: colors.offWhite, fontWeight: "600", letterSpacing: 1.4 },
+            headerTitleStyle: { color: colors.offWhite, fontWeight: "600" },
             contentStyle: { backgroundColor: colors.background },
             headerShadowVisible: false,
           }}
@@ -25,6 +25,11 @@ export default function RootLayout() {
           <Stack.Screen name="atlas/category/[categoryId]" options={{ title: "Category" }} />
           <Stack.Screen name="atlas/branch/[branchId]" options={{ title: "Branch" }} />
           <Stack.Screen name="atlas/achievement/[achievementId]" options={{ title: "Achievement" }} />
+          <Stack.Screen name="collections/[itemId]" options={{ title: "Collection" }} />
+          <Stack.Screen name="north-stars/index" options={{ title: "North Stars" }} />
+          <Stack.Screen name="north-stars/[northStarId]" options={{ title: "North Star" }} />
+          <Stack.Screen name="focus" options={{ title: "Focus" }} />
+          <Stack.Screen name="compass" options={{ title: "Compass" }} />
           <Stack.Screen name="ledger" options={{ title: "Ledger" }} />
           <Stack.Screen name="settings" options={{ title: "Settings" }} />
         </Stack>

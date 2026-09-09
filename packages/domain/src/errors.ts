@@ -49,3 +49,10 @@ export class IsolationError extends PsxError {
     this.name = "IsolationError";
   }
 }
+
+export class DomainRuleError extends PsxError {
+  constructor(code: string, message: string) {
+    super(code, message);
+    this.name = "DomainRuleError";
+  }
+}

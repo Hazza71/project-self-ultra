@@ -4,6 +4,7 @@
 --   docker compose up -d
 --   psql "$DATABASE_URL" -f supabase/local/0000_auth_shim.sql
 --   psql "$DATABASE_URL" -f supabase/migrations/20260909120000_init.sql
+--   psql "$DATABASE_URL" -f supabase/migrations/20260909180000_phase2.sql
 --   psql "$DATABASE_URL" -f supabase/tests/rls.sql
 
 BEGIN;

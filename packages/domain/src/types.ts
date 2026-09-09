@@ -1,12 +1,19 @@
 import {
   ACHIEVEMENT_STATES,
   CLAIM_SOURCES,
+  COLLECTION_STATES,
   COMPETENCE_STATES,
+  NORTH_STAR_STATES,
+  SEASON_STATES,
 } from "./constants.js";
 
 export type AchievementState = (typeof ACHIEVEMENT_STATES)[number];
 export type CompetenceState = (typeof COMPETENCE_STATES)[number];
 export type ClaimSource = (typeof CLAIM_SOURCES)[number];
+
+export type CollectionState = (typeof COLLECTION_STATES)[number];
+export type NorthStarState = (typeof NORTH_STAR_STATES)[number];
+export type SeasonState = (typeof SEASON_STATES)[number];
 
 export type LedgerEventType =
   | "catalog_imported"
@@ -18,7 +25,20 @@ export type LedgerEventType =
   | "claimed"
   | "claim_rejected"
   | "manual_log"
-  | "competence_updated";
+  | "competence_updated"
+  | "collection_created"
+  | "collection_updated"
+  | "north_star_created"
+  | "north_star_updated"
+  | "north_star_progress"
+  | "focus_updated"
+  | "season_created"
+  | "season_updated"
+  | "daily_challenge_generated"
+  | "daily_challenge_completed"
+  | "attention_budget_flagged"
+  | "pulse_tool_invoked"
+  | "pulse_claim_rejected";
 
 export type ProvenanceSource =
   | "user"
@@ -252,8 +272,168 @@ export interface OverallRollup {
   byTree: TreeRollup[];
 }
 
+export interface CollectionEvidence {
+  id: string;
+  kind: string;
+  payload: Record<string, unknown>;
+  createdAt: string;
+}
+
+export interface RepertoireMetadata {
+  arrangement?: string;
+  section?: string;
+  progressPercent?: number;
+  tempoBpm?: number;
+  fromMemory: boolean;
+  usesSheetOrTab: boolean;
+  recordingUrl?: string;
+}
+
+export interface CollectionItem {
+  id: string;
+  userId: string;
+  branchId: string;
+  title: string;
+  type: string;
+  subtype?: string;
+  state: CollectionState;
+  dateAdded: string;
+  startedAt: string | null;
+  completedAt: string | null;
+  difficulty?: string;
+  notes: string;
+  evidence: CollectionEvidence[];
+  source?: string;
+  prerequisites: string[];
+  tags: string[];
+  rating?: number;
+  reflection?: string;
+  repertoire?: RepertoireMetadata;
+  updatedAt: string;
+}
+
+export interface CollectionCounts {
+  saved: number;
+  planned: number;
+  active: number;
+  competent: number;
+  completed: number;
+  archived: number;
+  total: number;
+}
+
+export interface NorthStarHistoryEntry {
+  at: string;
+  value: number;
+  note?: string;
+  source: "manual" | "spend" | "pulse" | "system";
+  xpGranted: 0;
+}
+
+export interface NorthStar {
+  id: string;
+  userId: string;
+  name: string;
+  type: string;
+  currentValue: number;
+  targetValue: number;
+  unit: string;
+  deadline: string | null;
+  reason: string;
+  linkedBranchIds: string[];
+  linkedCategoryIds: string[];
+  status: NorthStarState;
+  history: NorthStarHistoryEntry[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type FocusKind = "branch" | "category" | "north_star";
+
+export interface FocusItem {
+  kind: FocusKind;
+  id: string;
+  note?: string;
+  load?: "high" | "maintenance" | "temporary";
+}
+
+export interface FocusRecord {
+  userId: string;
+  items: FocusItem[];
+  updatedAt: string;
+}
+
+export interface Season {
+  id: string;
+  userId: string;
+  name: string;
+  startsAt: string;
+  endsAt: string;
+  priorityBranchIds: string[];
+  priorityCategoryIds: string[];
+  status: SeasonState;
+  review: { intention: string; actual: string; at: string } | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DailyChallenge {
+  id: string;
+  userId: string;
+  date: string;
+  title: string;
+  branchId?: string;
+  northStarId?: string;
+  done: boolean;
+  completedAt: string | null;
+}
+
+export interface AttentionBudgetItem {
+  kind: "focus" | "north_star" | "season_priority" | "collection";
+  id: string;
+  label: string;
+  load: "high" | "maintenance" | "temporary";
+}
+
+export interface AttentionBudget {
+  highLoadGoalCount: number;
+  limit: number;
+  overloaded: boolean;
+  suggestion: string | null;
+  items: AttentionBudgetItem[];
+}
+
+export type CompassSuggestionKind =
+  | "branch"
+  | "achievement"
+  | "collection"
+  | "north_star"
+  | "maintenance"
+  | "pause";
+
+export interface CompassSuggestion {
+  kind: CompassSuggestionKind;
+  id: string;
+  title: string;
+  reason: string;
+  score: number;
+  href?: string;
+}
+
+export interface ReadyToClaimExplanation {
+  achievementId: string;
+  title: string;
+  state: AchievementState;
+  eligible: boolean;
+  readyToClaim: boolean;
+  claimed: boolean;
+  missing: string[];
+  canPulseClaim: false;
+  nextStep: string;
+}
+
 export interface PersistSnapshot {
-  version: 1;
+  version: 1 | 2;
   userId: string;
   progress: UserAchievementProgress[];
   evidence: EvidenceRecord[];
@@ -261,4 +441,9 @@ export interface PersistSnapshot {
   ledger: LedgerEvent[];
   competence: CompetenceRecord[];
   manualLogs: ManualLogRecord[];
+  collections?: CollectionItem[];
+  northStars?: NorthStar[];
+  focus?: FocusRecord | null;
+  seasons?: Season[];
+  dailyChallenges?: DailyChallenge[];
 }

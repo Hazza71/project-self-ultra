@@ -63,3 +63,36 @@ export const FORBIDDEN_CLAIM_SOURCES = [
   "ai",
   "permission",
 ] as const;
+
+/** Universal Collection states. Domain labels may differ; these stay stable. */
+export const COLLECTION_STATES = [
+  "saved",
+  "planned",
+  "active",
+  "competent",
+  "completed",
+  "archived",
+] as const;
+
+export const NORTH_STAR_STATES = [
+  "planned",
+  "active",
+  "paused",
+  "completed",
+  "archived",
+] as const;
+
+export const SEASON_STATES = ["planned", "active", "completed", "archived"] as const;
+
+export const SEASON_MIN_WEEKS = 6;
+export const SEASON_MAX_WEEKS = 12;
+export const SEASON_RECOMMENDED_PRIORITY_MIN = 2;
+export const SEASON_RECOMMENDED_PRIORITY_MAX = 4;
+export const FOCUS_RECOMMENDED_MAX = 3;
+export const DAILY_CHALLENGE_DEFAULT_COUNT = 3;
+/** Stub threshold: more than this many concurrent high-load goals is overload. */
+export const ATTENTION_BUDGET_HIGH_LOAD_LIMIT = 4;
+
+export const HIGH_LOAD_COLLECTION_DIFFICULTIES = ["high", "demanding", "intense"] as const;
+
+export const DEFAULT_PULSE_ADAPTER = "mock" as const;

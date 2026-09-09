@@ -38,7 +38,7 @@ export default function SettingsScreen() {
             : "Awaiting data/canonical_data.json"
         }
       />
-      <Row title="Pulse AI" body="Typed stub only in Phase 1. Voice TTS is out of scope." />
+      <Row title="Pulse AI" body="Typed tools via mock adapter (PSX_PULSE_ADAPTER=mock). OPENAI_API_KEY is server-only — never ship it in Expo. Voice TTS is out of scope." />
       <Row
         title="Sign Out"
         danger
