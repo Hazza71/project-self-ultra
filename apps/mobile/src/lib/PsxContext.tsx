@@ -3,10 +3,14 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import {
   AutoClaimForbiddenError,
   CanonicalImportError,
+  createLocalPulseRuntime,
   importCanonical,
   MemoryStore,
   type Catalog,
+  type CollectionState,
+  type FocusItem,
   type OverallRollup,
+  type PulseTurnResult,
   type SearchFilters,
   type SearchHit,
 } from "@psx/domain";
@@ -26,12 +30,35 @@ type PsxContextValue = {
   overall: OverallRollup | null;
   listening: boolean;
   setListening: (value: boolean) => void;
+  lastPulse: PulseTurnResult | null;
   refresh: () => void;
+  persistNow: () => void;
   search: (filters?: SearchFilters) => SearchHit[];
   start: (achievementId: string) => void;
   logEvidence: (achievementId: string, note?: string) => void;
   claim: (achievementId: string) => void;
   logManual: (body: string, achievementId?: string) => void;
+  addCollection: (
+    branchId: string,
+    title: string,
+    extra?: { state?: CollectionState; notes?: string; difficulty?: string },
+  ) => void;
+  updateCollectionState: (id: string, state: CollectionState) => void;
+  addNorthStar: (input: {
+    name: string;
+    targetValue: number;
+    currentValue?: number;
+    unit?: string;
+    type?: string;
+    deadline?: string;
+    reason?: string;
+    linkedBranchIds?: string[];
+  }) => void;
+  recordNorthStar: (id: string, value: number, note?: string) => void;
+  setFocusItems: (items: FocusItem[]) => void;
+  startSeason: (input: { name: string; weeks?: number; priorityBranchIds: string[] }) => void;
+  completeChallenge: (id: string) => void;
+  askPulse: (text: string) => Promise<PulseTurnResult | null>;
   signOut: () => Promise<void>;
 };
 
@@ -57,6 +84,7 @@ export function PsxProvider({ children }: { children: ReactNode }) {
   const [userId, setUserId] = useState("local-pending");
   const [store, setStore] = useState<MemoryStore | null>(null);
   const [listening, setListening] = useState(false);
+  const [lastPulse, setLastPulse] = useState<PulseTurnResult | null>(null);
   const [tick, setTick] = useState(0);
 
   const persist = useCallback(async (next: MemoryStore, uid: string) => {
@@ -107,6 +135,9 @@ export function PsxProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<PsxContextValue>(() => {
     const overall = store ? store.overall(userId) : null;
+    const persistNow = () => {
+      if (store) void persist(store, userId);
+    };
     return {
       status,
       error,
@@ -116,12 +147,14 @@ export function PsxProvider({ children }: { children: ReactNode }) {
       overall,
       listening,
       setListening,
+      lastPulse,
       refresh,
+      persistNow,
       search: (filters) => (store ? store.search(userId, filters) : []),
       start: (achievementId) => {
         if (!store) return;
         store.start(userId, achievementId, { source: "atlas", actor: "user" });
-        void persist(store, userId);
+        persistNow();
         refresh();
       },
       logEvidence: (achievementId, note) => {
@@ -132,7 +165,7 @@ export function PsxProvider({ children }: { children: ReactNode }) {
           { payload: note ? { note } : {}, incrementReps: 1 },
           { source: "manual", actor: "user" },
         );
-        void persist(store, userId);
+        persistNow();
         refresh();
       },
       claim: (achievementId) => {
@@ -143,7 +176,7 @@ export function PsxProvider({ children }: { children: ReactNode }) {
             actor: "user",
             source: "atlas",
           });
-          void persist(store, userId);
+          persistNow();
           refresh();
         } catch (err) {
           if (err instanceof AutoClaimForbiddenError) throw err;
@@ -153,13 +186,82 @@ export function PsxProvider({ children }: { children: ReactNode }) {
       logManual: (body, achievementId) => {
         if (!store) return;
         store.logManual(userId, body, { source: "manual", actor: "user" }, achievementId);
-        void persist(store, userId);
+        persistNow();
         refresh();
+      },
+      addCollection: (branchId, title, extra) => {
+        if (!store) return;
+        store.createCollectionItem(
+          userId,
+          { branchId, title, state: extra?.state, notes: extra?.notes, difficulty: extra?.difficulty },
+          { source: "atlas", actor: "user" },
+        );
+        persistNow();
+        refresh();
+      },
+      updateCollectionState: (id, state) => {
+        if (!store) return;
+        store.updateCollectionItem(userId, id, { state }, { source: "atlas", actor: "user" });
+        persistNow();
+        refresh();
+      },
+      addNorthStar: (input) => {
+        if (!store) return;
+        store.createNorthStar(userId, input, { source: "atlas", actor: "user" });
+        persistNow();
+        refresh();
+      },
+      recordNorthStar: (id, value, note) => {
+        if (!store) return;
+        store.recordNorthStarProgress(userId, id, { value, note, source: "manual" }, { source: "manual", actor: "user" });
+        persistNow();
+        refresh();
+      },
+      setFocusItems: (items) => {
+        if (!store) return;
+        store.setFocus(userId, items, { source: "atlas", actor: "user" });
+        persistNow();
+        refresh();
+      },
+      startSeason: (input) => {
+        if (!store) return;
+        const weeks = input.weeks ?? 8;
+        const startsAt = new Date();
+        const endsAt = new Date(startsAt.getTime() + weeks * 7 * 24 * 60 * 60 * 1000);
+        store.createSeason(
+          userId,
+          {
+            name: input.name,
+            startsAt: startsAt.toISOString(),
+            endsAt: endsAt.toISOString(),
+            priorityBranchIds: input.priorityBranchIds,
+            status: "active",
+          },
+          { source: "atlas", actor: "user" },
+        );
+        persistNow();
+        refresh();
+      },
+      completeChallenge: (id) => {
+        if (!store) return;
+        store.completeDailyChallenge(userId, id);
+        persistNow();
+        refresh();
+      },
+      askPulse: async (text) => {
+        if (!store) return null;
+        const runtime = createLocalPulseRuntime(store, userId);
+        const turn = await runtime.turn(text);
+        setLastPulse(turn);
+        persistNow();
+        refresh();
+        return turn;
       },
       signOut: async () => {
         await AsyncStorage.multiRemove([SNAP_KEY, USER_KEY]);
         const uid = await ensureUserId();
         setUserId(uid);
+        setLastPulse(null);
         if (store) {
           const fresh = new MemoryStore(store.catalog);
           setStore(fresh);
@@ -167,7 +269,7 @@ export function PsxProvider({ children }: { children: ReactNode }) {
         refresh();
       },
     };
-  }, [status, error, userId, store, listening, persist, refresh, tick]);
+  }, [status, error, userId, store, listening, lastPulse, persist, refresh, tick]);
 
   return <PsxContext.Provider value={value}>{children}</PsxContext.Provider>;
 }
