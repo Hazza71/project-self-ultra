@@ -1,0 +1,17 @@
+export { PRODUCT_NAME, PRODUCT_SHORT, AI_LAYER_BRAND, MANUAL_MAP_BRAND, CANONICAL_SCHEMA, EXPECTED_COUNTS, CANONICAL_TREE_NAMES, INVARIANTS, ACHIEVEMENT_STATES, COMPETENCE_STATES } from "./constants.js";
+export { sha256Hex } from "./sha256.js";
+export { mintAchievementId, mintBranchId, mintCategoryId, mintCategoryId as mintCategoryStableId, normalizePathPart } from "./ids.js";
+export { importCanonical, assertCanonicalCounts } from "./canonical/importer.js";
+export { parseCanonicalFile } from "./canonical/schema.js";
+export { MemoryStore } from "./store/memoryStore.js";
+export { isEligible, isMasteryPlusTier, isPlatinumTier, masteryPlusBlocksPlatinum } from "./engine/eligibility.js";
+export { assertExplicitUserClaim, assertCanClaim, isAutoClaimAttempt } from "./engine/claim.js";
+export { simulatePulsePermission, simulateImportSideEffects, simulateWearableAutoComplete } from "./engine/permissions.js";
+export { competenceForBranch } from "./engine/competence.js";
+export { rollupOverall, rollupTree } from "./engine/progress.js";
+export { branchKind } from "./engine/branchKind.js";
+export type { BranchKind } from "./engine/branchKind.js";
+export { createLedgerEvent } from "./ledger/ledger.js";
+export { AutoClaimForbiddenError, CanonicalCountsError, CanonicalImportError, ClaimNotAllowedError } from "./errors.js";
+export { RLS_POLICY_SQL, NO_AUTO_CLAIM_SQL_INVARIANTS } from "./rls/policies.js";
+export type * from "./types.js";

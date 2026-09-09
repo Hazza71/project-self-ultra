@@ -1,0 +1,60 @@
+{
+  "bundle": "PSX Complete Grokbot Blueprint",
+  "version": "2026-09-08",
+  "canonical_counts": {
+    "trees": 7,
+    "categories": 34,
+    "branches": 150,
+    "achievements": 619
+  },
+  "source_of_truth_priority": [
+    "MASTER_BLUEPRINT.md",
+    "canonical_data.json",
+    "REQUIREMENTS_CHECKLIST.md",
+    "BUILD_PROMPT_FOR_GROKBOT.md",
+    "assets/visual_direction_reference.png",
+    "prototype_reference.html"
+  ],
+  "notes": [
+    "Written blueprint overrides older visual/prototype conflicts.",
+    "original_logo_reference.png is the logo reference that must not be redesigned.",
+    "Acquisition motivation pinboard amendment included in MASTER_BLUEPRINT.md."
+  ],
+  "files": [
+    {
+      "path": "BUILD_PROMPT_FOR_GROKBOT.md",
+      "size_bytes": 2520,
+      "sha256": "fafa8e26929a88d01d1cc3ba33eb63c7b2c2930d213475ccfc359513178289dc"
+    },
+    {
+      "path": "MASTER_BLUEPRINT.md",
+      "size_bytes": 61551,
+      "sha256": "7e0d0bf2aeb908874c9fa784fd0ae2eddfeca78b46137787a828743731ed0651"
+    },
+    {
+      "path": "REQUIREMENTS_CHECKLIST.md",
+      "size_bytes": 10792,
+      "sha256": "cf9d05fe77e45db504171a4a6e906017528a214e118e86ebc1a1530d796e77c1"
+    },
+    {
+      "path": "assets/original_logo_reference.png",
+      "size_bytes": 2044704,
+      "sha256": "61e6d85c9cb2670105b051fa6b0d9418ab980794b0e44b05fd4a41d1a540bc7d"
+    },
+    {
+      "path": "assets/visual_direction_reference.png",
+      "size_bytes": 1816314,
+      "sha256": "c3b137be103fb5aa43149ef87541c1fe019496bd53430a64ec6ac7cd8c9d55b1"
+    },
+    {
+      "path": "canonical_data.json",
+      "size_bytes": 221251,
+      "sha256": "1c741620681c792aae830ef3d8611464fe0123813e40dff77277e0ba234c5437"
+    },
+    {
+      "path": "prototype_reference.html",
+      "size_bytes": 204079,
+      "sha256": "2acfd4473e099c780067e84360460b6700e00ad806f3cc9fd1bd745f04510aad"
+    }
+  ]
+}

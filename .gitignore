@@ -1,0 +1,47 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Env
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs / OS
+*.log
+.DS_Store
+Thumbs.db
+
+# Builds
+dist
+build
+.turbo
+coverage
+.cache
+*.tsbuildinfo
+
+# Expo / React Native
+apps/mobile/.expo
+apps/mobile/dist
+apps/mobile/web-build
+apps/mobile/ios
+apps/mobile/android
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# IDE
+.idea
+.vscode
+*.swp
+
+# Test / temp
+tmp/*
+!tmp/.gitkeep
+.vitest
+.nyc_output
+apps/mobile/package-lock.json
