@@ -9,6 +9,8 @@ export { assertExplicitUserClaim, assertCanClaim, isAutoClaimAttempt } from "./e
 export { simulatePulsePermission, simulateImportSideEffects, simulateWearableAutoComplete } from "./engine/permissions.js";
 export { competenceForBranch } from "./engine/competence.js";
 export { rollupOverall, rollupTree } from "./engine/progress.js";
+export { branchKind } from "./engine/branchKind.js";
+export type { BranchKind } from "./engine/branchKind.js";
 export { createLedgerEvent } from "./ledger/ledger.js";
 export { AutoClaimForbiddenError, CanonicalCountsError, CanonicalImportError, ClaimNotAllowedError } from "./errors.js";
 export { RLS_POLICY_SQL, NO_AUTO_CLAIM_SQL_INVARIANTS } from "./rls/policies.js";

@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { Text } from "react-native";
 import { ListRow } from "../../../src/components/ListRow";
 import { Screen } from "../../../src/components/Screen";
+import { branchKind } from "@psx/domain";
 import { usePsx } from "../../../src/lib/PsxContext";
 import { type as typeStyles } from "../../../src/theme/tokens";
 
@@ -13,6 +14,7 @@ export default function BranchScreen() {
   const category = catalog?.categories.find((item) => item.id === branch?.categoryId);
   const achievements = catalog?.achievements.filter((item) => item.branchId === branchId) ?? [];
   const competence = store && branch ? store.getCompetence(userId, branch.id).state : "unexplored";
+  const kind = catalog && branch ? branchKind(catalog, branch.id) : null;
 
   if (!branch) {
     return (
@@ -26,7 +28,10 @@ export default function BranchScreen() {
     <Screen>
       <Text style={typeStyles.eyebrow}>{category?.name}</Text>
       <Text style={typeStyles.title}>{branch.name}</Text>
-      <Text style={typeStyles.muted}>Competence: {competence}</Text>
+      <Text style={typeStyles.muted}>
+        Competence: {competence}
+        {kind ? ` · ${kind === "core" ? "core / recommended" : kind}` : ""}
+      </Text>
       {achievements.map((achievement) => {
         const progress = store?.getProgress(userId, achievement.id);
         return (

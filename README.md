@@ -49,22 +49,19 @@ pnpm test
 
 ## Canonical catalog
 
-`data/canonical_data.json` is the source of truth (schema `psx.canonical_data.v1`). Until that file is installed, Atlas shows an empty catalog on purpose.
+`data/canonical_data.json` is the source of truth (schema `psx.canonical_data.v1`). It is imported by `@psx/domain` — never recreated by hand. Written blueprint docs in `docs/` override older visual/prototype references.
 
-If you receive the catalog as a **base64 gzip tarball** (parts 1 then 2):
+Imported counts must stay exactly **7 / 34 / 150 / 619**. `pnpm verify:canonical` fails CI otherwise.
+
+If the catalog is ever re-delivered as a **base64 gzip tarball**:
 
 ```bash
-# part 1
-cat part1.b64 > tmp/psx-bundle.b64
-# part 2 (append)
-cat part2.b64 >> tmp/psx-bundle.b64
+# concatenate parts into tmp/psx-bundle.b64 (base64 only, no markers)
 chmod +x scripts/ingest-canonical-bundle.sh
 ./scripts/ingest-canonical-bundle.sh
 pnpm verify:canonical
 pnpm test
 ```
-
-`pnpm verify:canonical` fails CI unless imported counts are exactly 7/34/150/619.
 
 Stable IDs are SHA-256 path hashes of `treeId/category/branch/title/tier` so re-imports stay stable.
 
@@ -77,7 +74,7 @@ pnpm mobile:web      # Web — useful for a quick shell check
 
 Home is Pulse-centred (logo, tap-to-talk stub, Focus/Progress cards, System Overview → Atlas). There is no large ULTRA title and no six-tab bar.
 
-Without `data/canonical_data.json`, copy is still wired: after ingest, copy the JSON onto `apps/mobile/assets/canonical_data.json` (the ingest script does this) and reload.
+The Expo app loads the same catalog from `apps/mobile/assets/canonical_data.json` (kept in sync by the ingest script).
 
 Local progress is stored in AsyncStorage, isolated by a device user id. **Claim** is a labeled button with a confirmation; the domain layer rejects Pulse/import/wearable actors.
 
@@ -123,7 +120,7 @@ pnpm verify:canonical     # Fails unless 7/34/150/619
 
 Covered:
 
-- import counts 7/34/150/619 (skipped until the JSON is present; then required)
+- import counts 7/34/150/619 against the shipped `canonical_data.json` digest
 - stable IDs across re-import
 - no auto-claim under import / Pulse-permission / wearable simulation
 - Claim requires explicit user action

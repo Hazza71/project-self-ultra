@@ -14,6 +14,9 @@ export default function AtlasIndex() {
       <Text style={typeStyles.title}>Atlas</Text>
       <Text style={typeStyles.muted}>
         Manual master map. Project → Tree → Category → Branch → Achievement.
+        {catalog
+          ? ` ${catalog.counts.trees} trees · ${catalog.counts.categories} categories · ${catalog.counts.branches} branches · ${catalog.counts.achievements} achievements.`
+          : ""}
       </Text>
       <Pressable onPress={() => router.push("/atlas/search")} style={styles.search}>
         <Text style={{ color: colors.muted }}>Search trees, branches, achievements…</Text>

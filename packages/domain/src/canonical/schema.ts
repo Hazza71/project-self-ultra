@@ -36,6 +36,19 @@ function optionalNumber(value: unknown, fallback = 0): number {
   return value;
 }
 
+/** Canonical files ship invariants as a `{ flag: true }` object; fixtures may use a string array. */
+export function parseInvariants(raw: unknown): string[] {
+  if (Array.isArray(raw)) {
+    return raw.filter((item): item is string => typeof item === "string" && item.trim() !== "");
+  }
+  if (isRecord(raw)) {
+    return Object.entries(raw)
+      .filter(([, value]) => value === true)
+      .map(([key]) => key);
+  }
+  return [];
+}
+
 export function parseCanonicalFile(raw: unknown): CanonicalFile {
   if (!isRecord(raw)) {
     throw new CanonicalImportError("Canonical data must be a JSON object");
@@ -116,9 +129,7 @@ export function parseCanonicalFile(raw: unknown): CanonicalFile {
     };
   });
 
-  const invariants = Array.isArray(raw.invariants)
-    ? raw.invariants.filter((item): item is string => typeof item === "string")
-    : [];
+  const invariants = parseInvariants(raw.invariants);
 
   const counts = isRecord(raw.counts)
     ? {

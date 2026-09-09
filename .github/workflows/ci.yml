@@ -21,9 +21,4 @@ jobs:
       - run: pnpm --filter @psx/domain typecheck
       - run: pnpm test
       - name: Verify canonical counts
-        run: |
-          if [ -f data/canonical_data.json ]; then
-            pnpm verify:canonical
-          else
-            echo "data/canonical_data.json not present yet — import count tests are skipped until the canonical file is installed."
-          fi
+        run: pnpm verify:canonical

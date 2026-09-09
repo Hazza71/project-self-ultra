@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { Text } from "react-native";
 import { ListRow } from "../../../src/components/ListRow";
 import { Screen } from "../../../src/components/Screen";
+import { branchKind } from "@psx/domain";
 import { usePsx } from "../../../src/lib/PsxContext";
 import { type as typeStyles } from "../../../src/theme/tokens";
 
@@ -28,12 +29,13 @@ export default function CategoryScreen() {
       {category.description ? <Text style={typeStyles.muted}>{category.description}</Text> : null}
       {branches.map((branch) => {
         const competence = store?.getCompetence(userId, branch.id).state ?? "unexplored";
+        const kind = catalog ? branchKind(catalog, branch.id) : branch.recommended ? "core" : "elective";
         return (
           <ListRow
             key={branch.id}
             title={branch.name}
             subtitle={`${branch.achievementIds.length} achievements · ${competence}`}
-            meta={branch.recommended ? "REC" : undefined}
+            meta={kind}
             onPress={() => router.push(`/atlas/branch/${branch.id}`)}
           />
         );
